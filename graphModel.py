@@ -45,7 +45,7 @@ class Graph:
         Input : a graph coordinate
         Output : an integer representing the distance to the end/goal coordinate
         '''
-        return abs(graph_coordinate[0] - self.end_coordinate[0]) + abs(graph_coordinate[0] - self.end_coordinate[1])
+        return abs(graph_coordinate[0] - self.end_coordinate[0]) + abs(graph_coordinate[1] - self.end_coordinate[1])
 
 
 import heapq

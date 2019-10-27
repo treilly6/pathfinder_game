@@ -1,4 +1,6 @@
 import pygame
+from tkinter import *
+import time
 import collections
 from path_functions import *
 from graphModel import Graph, PriorityQueue
@@ -23,10 +25,11 @@ def breadth_first_search(start_coordinate, end_coordinate):
             print("BROKEN")
             break
 
-        print("VISITING : ", current)
+        time.sleep(.15)
 
         if current != start_coordinate:
-            change_box_color_coordinate(current, (204, 204, 204))
+            change_box_color_coordinate(current, grey)
+            pygame.display.update()
 
         for neighbor in graph_obj.neighbors(current):
             if neighbor not in came_from:
@@ -44,6 +47,7 @@ def breadth_first_search(start_coordinate, end_coordinate):
     print(path)
     print("REAL END")
     color_path(path, start_coordinate)
+    pygame.display.update()
     return
 
 def dijkstra_search(start_coordinate, end_coordinate):
@@ -61,23 +65,33 @@ def dijkstra_search(start_coordinate, end_coordinate):
     while not queue.empty():
         current = queue.get()
 
+        print("HERE THE CURRENT  ", current)
+
+        time.sleep(.15)
+
         if current == end_coordinate:
+            print("EXIT CLAUSE")
             break
 
         if current != start_coordinate:
-            change_box_color_coordinate(current, (204, 204, 204))
+            change_box_color_coordinate(current, grey)
+            print("chaneg")
+            pygame.display.update()
 
-        for next in graph_obj.neighbors(current):
-            new_cost = graph_obj.distance_cost(current)
-            if next not in cost or new_cost < cost[next]:
-                cost[next] = new_cost
+        for neighbor in graph_obj.neighbors(current):
+            new_cost = graph_obj.distance_cost(neighbor)
+            if neighbor not in cost or new_cost < cost[neighbor]:
+                cost[neighbor] = new_cost
                 priority = new_cost
-                queue.put(next, priority)
-                came_from[next] = current
+                queue.put(neighbor, priority)
+                came_from[neighbor] = current
 
     print("END OF dijkstra")
     # print(came_from)
     path = []
+    print(len(came_from))
+    print(came_from)
+    print("important")
     while came_from[end_coordinate]:
         path.append(came_from[end_coordinate])
         end_coordinate = came_from[end_coordinate]
@@ -86,6 +100,7 @@ def dijkstra_search(start_coordinate, end_coordinate):
     print(path)
     print("REAL END")
     color_path(path, start_coordinate)
+    pygame.display.update()
     return
 
 def color_path(path_list, start_coordinate):
@@ -107,6 +122,7 @@ def change_box_color_coordinate(coordinates, color):
 
     pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
     pygame.display.update()
+    return
 
 def change_box_color_mouse(color):
     '''
@@ -144,6 +160,7 @@ def clear_box(row, column):
     color = white
     pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
     pygame.display.update()
+    return
 
 
 ########################### END OF FUNCTIONF FOR THE PROGRAM #######################################
@@ -152,7 +169,7 @@ pygame.init()
 
 
 # create the dimensions of the pygame window
-screen_width = 1000
+screen_width = 700
 screen_height = 500
 screen = pygame.display.set_mode([screen_width,screen_height])
 
@@ -163,6 +180,7 @@ white = (255, 255, 255)
 green = (0, 255, 0)
 red = (255, 0, 0)
 yellow = (215, 224, 36)
+grey = (179, 179, 179)
 
 # Set the dimsensions of individual boxes in the grid
 width = 20
@@ -203,6 +221,7 @@ end_coordinate = None
 
 while running:
     pygame.time.delay(10)
+    print("lkooop")
 
     mouse_keys = pygame.mouse.get_pressed()
 
@@ -280,9 +299,12 @@ while running:
             graph_obj.start_coordinate = start_coordinate
             graph_obj.end_coordinate = end_coordinate
             # running = False
-            breadth_first_search(start_coordinate, end_coordinate)
-            # dijkstra_search(start_coordinate, end_coordinate)
-            # break
+            # breadth_first_search(start_coordinate, end_coordinate)
+            dijkstra_search(start_coordinate, end_coordinate)
+            print("END LOOP IN THE SPACE KEY SHIT")
+
+
+
 
 
 # also need to fit the screen better for the squares

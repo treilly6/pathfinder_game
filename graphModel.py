@@ -1,12 +1,31 @@
+import pygame
+
 class Graph:
-    def __init__(self, grid_width, grid_height):
+    def __init__(self, screen_dimensions, box_dimensions, screen):
         self.edges = {}
         self.walls = set()
         self.start_coordinate = None
         self.end_coordinate = None
-        self.grid_height = grid_height
-        self.grid_width = grid_width
-        self.grid = self.make_grid_matrix(grid_width, grid_height)
+        self.grid_height = screen_dimensions[1] // (box_dimensions[1] + box_dimensions[2])
+        self.grid_width = screen_dimensions[0] // (box_dimensions[0] + box_dimensions[2])
+        self.box_width = box_dimensions[0]
+        self.box_height = box_dimensions[1]
+        self.margin = box_dimensions[2]
+        self.grid = self.make_grid_matrix(self.grid_width, self.grid_height)
+        self.screen = screen
+
+    def draw_grid(self, screen):
+        ''' Draws the grid onto the screen '''
+        margin = self.margin
+        width = self.box_width
+        height = self.box_height
+        color = (255, 255, 255)
+        for row in range(self.grid_height):
+            for column in range(self.grid_width):
+                pygame.draw.rect(screen, color,[(margin + width) * column
+                + margin,(margin + height) * row + margin, width,height])
+        pygame.display.update()
+        return
 
     def make_grid_matrix(self, grid_width, grid_height):
         grid = []

@@ -1,5 +1,10 @@
 import pygame
 import collections
+from path_functions import *
+from graphModel import Graph, PriorityQueue
+
+
+############################ FUNCTIONS FOR FILE ####################################
 
 def breadth_first_search(start_coordinate, end_coordinate):
     '''
@@ -20,8 +25,10 @@ def breadth_first_search(start_coordinate, end_coordinate):
 
         print("VISITING : ", current)
 
+        if current != start_coordinate:
+            change_box_color_coordinate(current, (204, 204, 204))
+
         for neighbor in graph_obj.neighbors(current):
-            print("HERE TEH NEEGHTIBSKSDFJ", neighbor)
             if neighbor not in came_from:
                 queue.append(neighbor)
                 came_from[neighbor] = current
@@ -37,7 +44,49 @@ def breadth_first_search(start_coordinate, end_coordinate):
     print(path)
     print("REAL END")
     color_path(path, start_coordinate)
-    return(came_from)
+    return
+
+def dijkstra_search(start_coordinate, end_coordinate):
+    '''
+    Input : start and end coordinate
+    Output : path of dijkstra's algorithm search
+    '''
+    queue = PriorityQueue()
+    queue.put(start_coordinate, 0)
+    came_from = {}
+    cost = {}
+    came_from[start_coordinate] = None
+    cost[start_coordinate] = 0
+
+    while not queue.empty():
+        current = queue.get()
+
+        if current == end_coordinate:
+            break
+
+        if current != start_coordinate:
+            change_box_color_coordinate(current, (204, 204, 204))
+
+        for next in graph_obj.neighbors(current):
+            new_cost = graph_obj.distance_cost(current)
+            if next not in cost or new_cost < cost[next]:
+                cost[next] = new_cost
+                priority = new_cost
+                queue.put(next, priority)
+                came_from[next] = current
+
+    print("END OF dijkstra")
+    # print(came_from)
+    path = []
+    while came_from[end_coordinate]:
+        path.append(came_from[end_coordinate])
+        end_coordinate = came_from[end_coordinate]
+
+    print("paht shit")
+    print(path)
+    print("REAL END")
+    color_path(path, start_coordinate)
+    return
 
 def color_path(path_list, start_coordinate):
     '''
@@ -48,56 +97,56 @@ def color_path(path_list, start_coordinate):
         if box != start_coordinate:
             change_box_color_coordinate(box, yellow)
 
+def change_box_color_coordinate(coordinates, color):
+    '''
+    Input: coordinates tuple (x,y), and color the box will change to
+    Output: changes the color of the box
+    '''
+    row = coordinates[0]
+    column = coordinates[1]
+
+    pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
+    pygame.display.update()
+
+def change_box_color_mouse(color):
+    '''
+    Input: color the box will change to
+    Output: Changes the box color and returns the array indexes of the box
+    '''
+
+    print("CHANGE BOC XOLOER FUNC")
+
+    mouse_coordinates = pygame.mouse.get_pos()
+
+    # Get the row and col indexs for the matrix
+    # This format makes the left and top margins part of that box
+    # (i.e if you click on the top left boxes top margin that would
+    # be row 0 and that same boxes bottom margin would be considered row 1 and part of the box below it)
+    column = mouse_coordinates[0] // (width + margin)
+    row = mouse_coordinates[1] // (height + margin)
+
+    # Set the dimensions and location of new drawn rectagle
+    rect_dimen = (((margin + width) * column) + margin, (margin + height) * row + margin, width, height)
+
+    # draw and update
+    pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
+    pygame.display.update()
+    return (row, column)
+
+def clear_box(row, column):
+    '''
+    Input : the array indexes
+    Output: Resets that box color to the default color
+    '''
+
+    rect_dimen = (((margin + width) * column) + margin, (margin + height) * row + margin, width, height)
+    # draw and update
+    color = white
+    pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
+    pygame.display.update()
 
 
-
-class Graph:
-    def __init__(self, grid_width, grid_height):
-        self.edges = {}
-        self.walls = set()
-        self.start_coordinate = None
-        self.end_coordinate = None
-        self.grid_height = grid_height
-        self.grid_width = grid_width
-        self.grid = self.make_grid_matrix(grid_width, grid_height)
-
-    def make_grid_matrix(self, grid_width, grid_height):
-        grid = []
-        for x in range(grid_height):
-            temp = []
-            for y in range(grid_width):
-                temp.append((x,y))
-            grid.append(temp)
-        return grid
-
-    def in_bounds(self, coordinate_tuple):
-        row, column = coordinate_tuple
-        return ((0 <= row <= (self.grid_height - 1)) and (0 <= column <= (self.grid_width - 1)))
-
-    def not_wall(self, coordinate_tuple):
-        return coordinate_tuple not in self.walls
-
-    def neighbors(self, coordinate_tuple):
-        print(self.edges)
-        if coordinate_tuple in self.edges:
-            return self.edges[coordinate_tuple]
-        else:
-            row,col = coordinate_tuple
-            # set initial neighbors to the 4 graph nodes to the left, right, above, and below
-            neighbors = [(row + 1, col),(row - 1, col),(row, col + 1),(row, col - 1)]
-            # filter out possible positions if they are walls or not in bounds of grid
-            # print("neightbors before filter " , neighbors)
-            neighbors = list(filter(self.in_bounds, neighbors))
-            neighbors = list(filter(self.not_wall, neighbors))
-            # print("aFTER FILTER ", neighbors)
-            self.edges[coordinate_tuple] = neighbors
-
-            print("CHIRDT")
-            for positon in self.edges[coordinate_tuple]:
-                print(positon)
-            print("YYEEET")
-            return self.edges[coordinate_tuple]
-
+########################### END OF FUNCTIONF FOR THE PROGRAM #######################################
 
 pygame.init()
 
@@ -150,53 +199,6 @@ pygame.display.update()
 start_coordinate = None
 end_coordinate = None
 
-def change_box_color_coordinate(coordinates, color):
-    '''
-    Input: coordinates tuple (x,y), and color the box will change to
-    Output: changes the color of the box
-    '''
-    row = coordinates[0]
-    column = coordinates[1]
-
-    pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
-    pygame.display.update()
-
-def change_box_color_mouse(color):
-    '''
-    Input: color the box will change to
-    Output: Changes the box color and returns the array indexes of the box
-    '''
-
-    print("CHANGE BOC XOLOER FUNC")
-
-    mouse_coordinates = pygame.mouse.get_pos()
-
-    # Get the row and col indexs for the matrix
-    # This format makes the left and top margins part of that box
-    # (i.e if you click on the top left boxes top margin that would
-    # be row 0 and that same boxes bottom margin would be considered row 1 and part of the box below it)
-    column = mouse_coordinates[0] // (width + margin)
-    row = mouse_coordinates[1] // (height + margin)
-
-    # Set the dimensions and location of new drawn rectagle
-    rect_dimen = (((margin + width) * column) + margin, (margin + height) * row + margin, width, height)
-
-    # draw and update
-    pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
-    pygame.display.update()
-    return (row, column)
-
-def clear_box(row, column):
-    '''
-    Input : the array indexes
-    Output: Resets that box color to the default color
-    '''
-
-    rect_dimen = (((margin + width) * column) + margin, (margin + height) * row + margin, width, height)
-    # draw and update
-    color = white
-    pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
-    pygame.display.update()
 
 
 while running:
@@ -275,17 +277,13 @@ while running:
             print("START THE ALGORITHM")
             print(start_coordinate)
             print(end_coordinate)
-            print(graph_obj.walls)
-            running = False
+            graph_obj.start_coordinate = start_coordinate
+            graph_obj.end_coordinate = end_coordinate
+            # running = False
             breadth_first_search(start_coordinate, end_coordinate)
-            break
+            # dijkstra_search(start_coordinate, end_coordinate)
+            # break
 
-
-print("EXITED STUFF")
-print(graph_obj.walls)
-print("END")
-
-pygame.time.delay(5000)
 
 # also need to fit the screen better for the squares
 

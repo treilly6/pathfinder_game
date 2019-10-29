@@ -140,6 +140,13 @@ class Graph:
         '''
         return abs(graph_coordinate[0] - self.end_coordinate[0]) + abs(graph_coordinate[1] - self.end_coordinate[1])
 
+    def display_message(self, message, color):
+        text = pygame.font.Font('freesansbold.ttf', 60)
+        surface = text.render(message, True, color)
+        rect = surface.get_rect()
+        rect.center = (700/2, 500/2)
+        self.screen.blit(surface, rect)
+        pygame.display.update()
 
 import heapq
 

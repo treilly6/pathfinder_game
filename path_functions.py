@@ -40,6 +40,7 @@ def breadth_first_search(graphObj):
     path = []
     if not found:
         print("NO PATH POSSIBLE")
+        graphObj.display_message("No Path!", (255, 77, 77))
         return
 
     while came_from[end_coordinate]:
@@ -47,6 +48,7 @@ def breadth_first_search(graphObj):
         end_coordinate = came_from[end_coordinate]
 
     graphObj.color_path(path, start_coordinate)
+    graphObj.display_message("Path Found!", (0, 153, 51))
     pygame.display.update()
     return
 
@@ -94,6 +96,7 @@ def dijkstra_search(graphObj):
     # print(came_from)
     if not found:
         print("NO POSSIBLE PATH")
+        graphObj.display_message("No Path!", (255, 77, 77))
         return
 
     path = []
@@ -102,5 +105,6 @@ def dijkstra_search(graphObj):
         end_coordinate = came_from[end_coordinate]
 
     graphObj.color_path(path, start_coordinate)
+    graphObj.display_message("Path Found", (0, 153, 51))
     pygame.display.update()
     return

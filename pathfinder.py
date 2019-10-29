@@ -23,7 +23,7 @@ class OpenWindow:
         self.window = Tk()
         self.var = IntVar(self.window)
 
-        self.window.title("PAthfinder game plesae set some shit")
+        self.window.title("Pathfinder Game")
         Label(self.window, text = "Choose which Search Algorithm to Use").pack(anchor = W)
         Radiobutton(self.window, text="Breadth First Search", variable = self.var, value=1).pack(anchor=W)
         Radiobutton(self.window, text="Dijkstra", variable = self.var, value=2).pack(anchor=W)
@@ -43,7 +43,7 @@ class CloseWindow():
         self.var = IntVar(self.window)
         self.repeat = False
 
-        self.window.title("PAthfinder game plesae set some shit")
+        self.window.title("Pathfinder Game")
         Label(self.window, text = "Play Again?").pack(anchor = W)
         Radiobutton(self.window, text="Yes", variable = self.var, value=1).pack(anchor=W)
         Radiobutton(self.window, text="No", variable = self.var, value=2).pack(anchor=W)
@@ -89,8 +89,6 @@ def start_game():
 
     running = True
 
-    print("NICE")
-
     # draw the grid on the screen
     graph_obj.draw_grid(screen)
 
@@ -117,7 +115,6 @@ def start_game():
                         graph_obj.start_coordinate = (row, col)
                 else:
                     graph_obj.start_coordinate = (row, col)
-                print("END")
                 if graph_obj.start_coordinate == graph_obj.end_coordinate:
                     graph_obj.end_coordinate = None
 
@@ -134,7 +131,6 @@ def start_game():
                         graph_obj.end_coordinate = (row, col)
                 else:
                     graph_obj.end_coordinate = (row, col)
-                print("END")
                 if graph_obj.end_coordinate == graph_obj.start_coordinate:
                     graph_obj.start_coordinate = None
 
@@ -160,16 +156,12 @@ def start_game():
                     if (row,column) in graph_obj.walls:
                         graph_obj.walls.remove((row, column))
 
-                print("ROW : ", row, " COL : ", column)
-                print("END")
-
             if keys[pygame.K_SPACE]:
                 print("START THE ALGORITHM")
                 print(graph_obj.start_coordinate)
                 print(graph_obj.end_coordinate)
                 algorithm(graph_obj)
                 running = False
-                print("END LOOP IN THE SPACE KEY SHIT")
 
     cw = CloseWindow()
     if cw.repeat == True:

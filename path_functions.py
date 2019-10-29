@@ -37,7 +37,6 @@ def breadth_first_search(graphObj):
                 came_from[neighbor] = current
 
     print("END OF BFS")
-    # print(came_from)
     path = []
     if not found:
         print("NO PATH POSSIBLE")
@@ -47,9 +46,6 @@ def breadth_first_search(graphObj):
         path.append(came_from[end_coordinate])
         end_coordinate = came_from[end_coordinate]
 
-    print("paht shit")
-    print(path)
-    print("REAL END")
     graphObj.color_path(path, start_coordinate)
     pygame.display.update()
     return
@@ -84,7 +80,6 @@ def dijkstra_search(graphObj):
 
         if current != start_coordinate:
             graphObj.change_box_color_coordinate(current, (179, 179, 179))
-            print("chaneg")
             pygame.display.update()
 
         for neighbor in graphObj.neighbors(current):
@@ -100,18 +95,12 @@ def dijkstra_search(graphObj):
     if not found:
         print("NO POSSIBLE PATH")
         return
-        
+
     path = []
-    print(len(came_from))
-    print(came_from)
-    print("important")
     while came_from[end_coordinate]:
         path.append(came_from[end_coordinate])
         end_coordinate = came_from[end_coordinate]
 
-    print("paht shit")
-    print(path)
-    print("REAL END")
     graphObj.color_path(path, start_coordinate)
     pygame.display.update()
     return

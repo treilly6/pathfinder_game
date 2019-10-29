@@ -36,6 +36,80 @@ class Graph:
             grid.append(temp)
         return grid
 
+    def clear_box(self, row, column):
+        '''
+        Input : the array indexes
+        Output: Resets that box color to the default color
+        '''
+
+        margin = self.margin
+        width = self.box_width
+        height = self.box_height
+        screen = self.screen
+
+        rect_dimen = (((margin + width) * column) + margin, (margin + height) * row + margin, width, height)
+        # draw and update
+        color = (255,255,255)
+        pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
+        pygame.display.update()
+        return
+
+    def change_box_color_mouse(self, color):
+        '''
+        Input: color the box will change to
+        Output: Changes the box color and returns the array indexes of the box
+        '''
+
+        print("CHANGE BOC XOLOER FUNC")
+
+        mouse_coordinates = pygame.mouse.get_pos()
+
+        width = self.box_width
+        height = self.box_height
+        margin = self.margin
+        screen = self.screen
+
+        # Get the row and col indexs for the matrix
+        # This format makes the left and top margins part of that box
+        # (i.e if you click on the top left boxes top margin that would
+        # be row 0 and that same boxes bottom margin would be considered row 1 and part of the box below it)
+        column = mouse_coordinates[0] // (width + margin)
+        row = mouse_coordinates[1] // (height + margin)
+
+        # Set the dimensions and location of new drawn rectagle
+        rect_dimen = (((margin + width) * column) + margin, (margin + height) * row + margin, width, height)
+
+        # draw and update
+        pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
+        pygame.display.update()
+        return (row, column)
+
+    def change_box_color_coordinate(self, coordinates, color):
+        '''
+        Input: coordinates tuple (x,y), and color the box will change to
+        Output: changes the color of the box
+        '''
+        row = coordinates[0]
+        column = coordinates[1]
+
+        screen = self.screen
+        width = self.box_width
+        height = self.box_height
+        margin = self.margin
+
+        pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
+        pygame.display.update()
+        return
+
+    def color_path(self, path_list, start_coordinate):
+        '''
+        Input : a list of tuple coordinate
+        Output : colors corrdinates in the path
+        '''
+        for box in path_list:
+            if box != start_coordinate:
+                self.change_box_color_coordinate(box, (215, 224, 36))
+
     def in_bounds(self, coordinate_tuple):
         row, column = coordinate_tuple
         return ((0 <= row <= (self.grid_height - 1)) and (0 <= column <= (self.grid_width - 1)))

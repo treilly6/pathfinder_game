@@ -12,6 +12,28 @@ from graphModel import Graph, PriorityQueue
 
 
 ########################### END OF FUNCTIONF FOR THE PROGRAM #######################################
+algorithm = None
+algo_dict = {
+    1 : breadth_first_search,
+    2 : dijkstra_search,
+}
+
+def choose_algo_click():
+    global algorithm
+    print("YEET ", var.get())
+    selection = var.get()
+    algorithm = algo_dict[selection]
+    window.quit()
+
+window = Tk()
+var = IntVar()
+window.title("PAthfinder game plesae set some shit")
+Label(window, text = "Choose which Search Algorithm to Use").pack(anchor = W)
+Radiobutton(window, text="Breadth First Search", variable = var, value=1).pack(anchor=W)
+Radiobutton(window, text="Dijkstra", variable = var, value=2).pack(anchor=W)
+Button(window, text="Submit", width = 20, command = choose_algo_click).pack(anchor=W)
+window.mainloop()
+
 
 pygame.init()
 
@@ -33,7 +55,7 @@ grey = (179, 179, 179)
 # Set the dimsensions of individual boxes in the grid
 #  (width, height, margin)
 screen_dimensions = (screen_width, screen_height)
-box_dimensions = (20, 20, 5)
+box_dimensions = (10, 10, 2)
 
 # Set the dimensions of the collection of boxes
 # grid_width = screen_dimensions[0] // (box_dimensions[0] + box_dimensions[2])
@@ -55,13 +77,6 @@ print("NICE")
 # draw the grid on the screen
 graph_obj.draw_grid(screen)
 
-
-
-start_coordinate = None
-end_coordinate = None
-
-
-
 while running:
     pygame.time.delay(10)
     print("lkooop")
@@ -77,36 +92,36 @@ while running:
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_s]:
-            row, col = change_box_color_mouse(graph_obj, black)
-            if start_coordinate:
-                clear_box(graph_obj, start_coordinate[0], start_coordinate[1])
-                if (start_coordinate[0], start_coordinate[1]) == (row,col):
+            row, col = graph_obj.change_box_color_mouse(black)
+            if graph_obj.start_coordinate:
+                graph_obj.clear_box(graph_obj.start_coordinate[0], graph_obj.start_coordinate[1])
+                if (graph_obj.start_coordinate[0], graph_obj.start_coordinate[1]) == (row,col):
                     print("SAME BOX")
-                    start_coordinate = None
+                    graph_obj.start_coordinate = None
                 else:
-                    start_coordinate = (row, col)
+                    graph_obj.start_coordinate = (row, col)
             else:
-                start_coordinate = (row, col)
+                graph_obj.start_coordinate = (row, col)
             print("END")
-            if start_coordinate == end_coordinate:
-                end_coordinate = None
+            if graph_obj.start_coordinate == graph_obj.end_coordinate:
+                graph_obj.end_coordinate = None
 
 
 
         elif keys[pygame.K_e]:
-            row, col = change_box_color_mouse(graph_obj, red)
-            if end_coordinate:
-                clear_box(graph_obj, end_coordinate[0], end_coordinate[1])
-                if (end_coordinate[0], end_coordinate[1]) == (row,col):
+            row, col = graph_obj.change_box_color_mouse(red)
+            if graph_obj.end_coordinate:
+                graph_obj.clear_box(graph_obj.end_coordinate[0], graph_obj.end_coordinate[1])
+                if (graph_obj.end_coordinate[0], graph_obj.end_coordinate[1]) == (row,col):
                     print("SAME BOX")
-                    end_coordinate = None
+                    graph_obj.end_coordinate = None
                 else:
-                    end_coordinate = (row, col)
+                    graph_obj.end_coordinate = (row, col)
             else:
-                end_coordinate = (row, col)
+                graph_obj.end_coordinate = (row, col)
             print("END")
-            if end_coordinate == start_coordinate:
-                start_coordinate = None
+            if graph_obj.end_coordinate == graph_obj.start_coordinate:
+                graph_obj.start_coordinate = None
 
         if (event.type == pygame.MOUSEMOTION and (mouse_keys[0] or mouse_keys[2])) or event.type == pygame.MOUSEBUTTONDOWN:
             print("DOWN CLICK")
@@ -118,7 +133,7 @@ while running:
             elif mouse_keys[2]:
                 color = white
 
-            row, column = change_box_color_mouse(graph_obj, color)
+            row, column = graph_obj.change_box_color_mouse(color)
 
             # Add to the walls set in the graph object
             if color == green:
@@ -137,13 +152,12 @@ while running:
 
         if keys[pygame.K_SPACE]:
             print("START THE ALGORITHM")
-            print(start_coordinate)
-            print(end_coordinate)
-            graph_obj.start_coordinate = start_coordinate
-            graph_obj.end_coordinate = end_coordinate
+            print(graph_obj.start_coordinate)
+            print(graph_obj.end_coordinate)
             # running = False
-            # breadth_first_search(graph_obj, start_coordinate, end_coordinate)
-            dijkstra_search(graph_obj, start_coordinate, end_coordinate)
+            # breadth_first_search(graph_obj)
+            # dijkstra_search(graph_obj)
+            algorithm(graph_obj)
             print("END LOOP IN THE SPACE KEY SHIT")
 
 

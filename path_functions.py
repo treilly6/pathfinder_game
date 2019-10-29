@@ -4,11 +4,13 @@ import collections
 from graphModel import Graph, PriorityQueue
 
 
-def breadth_first_search(graphObj, start_coordinate, end_coordinate):
+def breadth_first_search(graphObj):
     '''
-    Input: Start Coordinate and end coordinate
+    Input: Graph object
     Output: path of the bfs result
     '''
+    start_coordinate = graphObj.start_coordinate
+    end_coordinate = graphObj.end_coordinate
     queue = collections.deque()
     queue.append(start_coordinate)
     came_from = {}
@@ -21,10 +23,10 @@ def breadth_first_search(graphObj, start_coordinate, end_coordinate):
             print("BROKEN")
             break
 
-        time.sleep(.15)
+        # time.sleep(.15)
 
         if current != start_coordinate:
-            change_box_color_coordinate(graphObj, current, (179, 179, 179))
+            graphObj.change_box_color_coordinate(current, (179, 179, 179))
             pygame.display.update()
 
         for neighbor in graphObj.neighbors(current):
@@ -42,15 +44,18 @@ def breadth_first_search(graphObj, start_coordinate, end_coordinate):
     print("paht shit")
     print(path)
     print("REAL END")
-    color_path(graphObj, path, start_coordinate)
+    graphObj.color_path(path, start_coordinate)
     pygame.display.update()
     return
 
-def dijkstra_search(graphObj, start_coordinate, end_coordinate):
+def dijkstra_search(graphObj):
     '''
     Input : start and end coordinate
     Output : path of dijkstra's algorithm search
     '''
+    start_coordinate = graphObj.start_coordinate
+    end_coordinate = graphObj.end_coordinate
+
     queue = PriorityQueue()
     queue.put(start_coordinate, 0)
     came_from = {}
@@ -63,14 +68,14 @@ def dijkstra_search(graphObj, start_coordinate, end_coordinate):
 
         print("HERE THE CURRENT  ", current)
 
-        time.sleep(.15)
+        # time.sleep(.15)
 
         if current == end_coordinate:
             print("EXIT CLAUSE")
             break
 
         if current != start_coordinate:
-            change_box_color_coordinate(graphObj, current, (179, 179, 179))
+            graphObj.change_box_color_coordinate(current, (179, 179, 179))
             print("chaneg")
             pygame.display.update()
 
@@ -95,80 +100,6 @@ def dijkstra_search(graphObj, start_coordinate, end_coordinate):
     print("paht shit")
     print(path)
     print("REAL END")
-    color_path(graphObj, path, start_coordinate)
-    pygame.display.update()
-    return
-
-def color_path(graphObj, path_list, start_coordinate):
-    '''
-    Input : a list of tuple coordinate
-    Output : colors corrdinates in the path
-    '''
-    for box in path_list:
-        if box != start_coordinate:
-            change_box_color_coordinate(graphObj, box, (215, 224, 36))
-
-def change_box_color_coordinate(graphObj, coordinates, color):
-    '''
-    Input: coordinates tuple (x,y), and color the box will change to
-    Output: changes the color of the box
-    '''
-    row = coordinates[0]
-    column = coordinates[1]
-
-    screen = graphObj.screen
-    width = graphObj.box_width
-    height = graphObj.box_height
-    margin = graphObj.margin
-
-    pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
-    pygame.display.update()
-    return
-
-def change_box_color_mouse(graphObj, color):
-    '''
-    Input: color the box will change to
-    Output: Changes the box color and returns the array indexes of the box
-    '''
-
-    print("CHANGE BOC XOLOER FUNC")
-
-    mouse_coordinates = pygame.mouse.get_pos()
-
-    width = graphObj.box_width
-    height = graphObj.box_height
-    margin = graphObj.margin
-    screen = graphObj.screen
-
-    # Get the row and col indexs for the matrix
-    # This format makes the left and top margins part of that box
-    # (i.e if you click on the top left boxes top margin that would
-    # be row 0 and that same boxes bottom margin would be considered row 1 and part of the box below it)
-    column = mouse_coordinates[0] // (width + margin)
-    row = mouse_coordinates[1] // (height + margin)
-
-    # Set the dimensions and location of new drawn rectagle
-    rect_dimen = (((margin + width) * column) + margin, (margin + height) * row + margin, width, height)
-
-    # draw and update
-    pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
-    pygame.display.update()
-    return (row, column)
-
-def clear_box(graphObj, row, column):
-    '''
-    Input : the array indexes
-    Output: Resets that box color to the default color
-    '''
-
-    margin = graphObj.margin
-    width = graphObj.box_width
-    height = graphObj.box_height
-    screen = graphObj.screen
-
-    rect_dimen = (((margin + width) * column) + margin, (margin + height) * row + margin, width, height)
-    # draw and update
-    color = (255,255,255)
-    pygame.draw.rect(screen, color,[(margin + width) * column + margin,(margin + height) * row + margin, width, height])
+    graphObj.color_path(path, start_coordinate)
     pygame.display.update()
     return

@@ -16,11 +16,13 @@ def breadth_first_search(graphObj):
     came_from = {}
     came_from[start_coordinate] = None
 
+    found = False
     while queue:
         current = queue.popleft()
 
         if current == end_coordinate:
             print("BROKEN")
+            found = True
             break
 
         # time.sleep(.15)
@@ -37,6 +39,10 @@ def breadth_first_search(graphObj):
     print("END OF BFS")
     # print(came_from)
     path = []
+    if not found:
+        print("NO PATH POSSIBLE")
+        return
+
     while came_from[end_coordinate]:
         path.append(came_from[end_coordinate])
         end_coordinate = came_from[end_coordinate]
@@ -63,6 +69,7 @@ def dijkstra_search(graphObj):
     came_from[start_coordinate] = None
     cost[start_coordinate] = 0
 
+    found = False
     while not queue.empty():
         current = queue.get()
 
@@ -72,6 +79,7 @@ def dijkstra_search(graphObj):
 
         if current == end_coordinate:
             print("EXIT CLAUSE")
+            found = True
             break
 
         if current != start_coordinate:
@@ -89,6 +97,10 @@ def dijkstra_search(graphObj):
 
     print("END OF dijkstra")
     # print(came_from)
+    if not found:
+        print("NO POSSIBLE PATH")
+        return
+        
     path = []
     print(len(came_from))
     print(came_from)

@@ -15,7 +15,7 @@ from graphModel import Graph, PriorityQueue
 algorithm = None
 algo_dict = {
     1 : breadth_first_search,
-    2 : dijkstra_search,
+    2 : a_star_search,
     3 : depth_first_search,
 }
 
@@ -27,7 +27,7 @@ class OpenWindow:
         self.window.title("Pathfinder Game")
         Label(self.window, text = "Choose which Search Algorithm to Use").pack(anchor = W)
         Radiobutton(self.window, text="Breadth First Search", variable = self.var, value=1).pack(anchor=W)
-        Radiobutton(self.window, text="Dijkstra", variable = self.var, value=2).pack(anchor=W)
+        Radiobutton(self.window, text="A* Search", variable = self.var, value=2).pack(anchor=W)
         Radiobutton(self.window, text="Depth First Search", variable = self.var, value=3).pack(anchor=W)
         Button(self.window, text="Submit", width = 20, command = self.choose_algo_click).pack(anchor=W)
         self.window.mainloop()

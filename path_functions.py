@@ -54,7 +54,7 @@ def breadth_first_search(graphObj):
 
 def dijkstra_search(graphObj):
     '''
-    Input : start and end coordinate
+    Input : graph object
     Output : path of dijkstra's algorithm search
     '''
     start_coordinate = graphObj.start_coordinate
@@ -108,3 +108,60 @@ def dijkstra_search(graphObj):
     graphObj.display_message("Path Found", (0, 153, 51))
     pygame.display.update()
     return
+
+
+def depth_first_search(graphObj):
+    '''
+    Input : graph object
+    Output : depth first search path
+    '''
+
+    start_coordinate = graphObj.start_coordinate
+    end_coordinate = graphObj.end_coordinate
+    found = False
+    came_from = {}
+    came_from[start_coordinate] = None
+
+    queue = [start_coordinate]
+
+    while queue:
+        current = queue.pop()
+
+        if current == end_coordinate:
+            print("FOUND THE TARGET")
+            found = True
+            break
+
+        if current != start_coordinate:
+            graphObj.change_box_color_coordinate(current, (179, 179, 179))
+            pygame.display.update()
+
+        for neighbor in graphObj.neighbors(current):
+            if neighbor not in came_from:
+                queue.append(neighbor)
+                came_from[neighbor] = current
+
+    if not found:
+        print("NO POSSIBLE PATH")
+        graphObj.display_message("No Path!", (255, 77, 77))
+        return
+
+    print("THERES A PATH")
+    path = []
+    while came_from[end_coordinate]:
+        print(end_coordinate)
+        path.append(came_from[end_coordinate])
+        end_coordinate = came_from[end_coordinate]
+
+    graphObj.color_path(path, start_coordinate)
+    graphObj.display_message("Path Found", (0, 153, 51))
+    pygame.display.update()
+    return
+
+
+def result_handler(found, came_from, graphObj):
+    pass
+
+
+
+# ADD DFS A*
